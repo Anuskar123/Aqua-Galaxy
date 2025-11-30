@@ -184,3 +184,81 @@ document.querySelectorAll(".nav-menu a").forEach((link) => {
     link.classList.add("active");
   }
 });
+
+// Scroll to Top Button
+const scrollTopBtn = document.getElementById('scrollTop');
+const quickNav = document.querySelector('.quick-nav');
+
+window.addEventListener('scroll', () => {
+  const scrolled = window.pageYOffset;
+  
+  // Show/hide scroll to top button
+  if (scrolled > 300) {
+    scrollTopBtn.classList.add('visible');
+    quickNav.classList.add('visible');
+  } else {
+    scrollTopBtn.classList.remove('visible');
+    quickNav.classList.remove('visible');
+  }
+});
+
+// Scroll to top on button click
+scrollTopBtn.addEventListener('click', () => {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+});
+
+// Smooth scroll with offset for fixed header
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function (e) {
+    e.preventDefault();
+    const targetId = this.getAttribute('href');
+    const targetElement = document.querySelector(targetId);
+    
+    if (targetElement) {
+      const headerOffset = 100;
+      const elementPosition = targetElement.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+
+      // Close mobile menu if open
+      if (navMenu && navMenu.classList.contains("active")) {
+        navMenu.classList.remove("active");
+        if (menuToggle) menuToggle.classList.remove("active");
+      }
+    }
+  });
+});
+
+// Add active state to quick nav buttons on scroll
+const sections = document.querySelectorAll('section[id]');
+const quickNavBtns = document.querySelectorAll('.quick-nav-btn');
+
+window.addEventListener('scroll', () => {
+  let current = '';
+  
+  sections.forEach(section => {
+    const sectionTop = section.offsetTop;
+    const sectionHeight = section.clientHeight;
+    
+    if (window.pageYOffset >= (sectionTop - 200)) {
+      current = section.getAttribute('id');
+    }
+  });
+
+  quickNavBtns.forEach(btn => {
+    btn.style.opacity = '0.6';
+    btn.style.transform = 'scale(1)';
+    
+    if (btn.getAttribute('href') === `#${current}`) {
+      btn.style.opacity = '1';
+      btn.style.transform = 'scale(1.1)';
+    }
+  });
+});
